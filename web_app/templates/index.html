@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Healthcare Chatbot</title>
+  <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+    #chat-container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+    }
+    #chatbox {
+      height: 300px;
+      overflow-y: scroll;
+      padding-bottom: 10px;
+    }
+    .message {
+      margin: 10px 0;
+      padding: 8px 12px;
+      border-radius: 20px;
+      max-width: 70%;
+    }
+    .userText {
+      background-color: #007bff;
+      color: #fff;
+      align-self: flex-end;
+    }
+    .botText {
+      background-color: #28a745;
+      color: #fff;
+    }
+    input[type="text"] {
+      width: calc(100% - 80px);
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+    }
+    input[type="submit"] {
+      width: 70px;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      background-color: #007bff;
+      color: #fff;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="chat-container">
+    <h1>Healthcare Chatbot</h1>
+    <div id="chatbox">
+      <p class="botText message">
+        <span>Please try typing full sentences as I am still learning!</span>
+      </p>
+      <p class="botText message">
+        <span>I am your Health assistant.</span>
+      </p>
+      <p class="botText message">
+        <span>Hi there! How can I help you? What symptoms are you facing?</span>
+      </p>
+    </div>
+    <div id="userInput" style="display: flex; align-items: center;">
+      <input id="textInput" type="text" name="msg" placeholder="Message" />
+      <input id="buttonInput" type="submit" value="Send" />
+    </div>
+  </div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script>
+    function getBotResponse() {
+      var rawText = $("#textInput").val();
+      var userHtml = '<p class="userText message"><span>' + rawText + "</span></p>";
+      $("#textInput").val("");
+      $("#chatbox").append(userHtml);
+      $("#chatbox").animate({ scrollTop: $("#chatbox")[0].scrollHeight }, 1000);
+      $.get("/get", { msg: rawText }).done(function (data) {
+        var botHtml = '<p class="botText message"><span>' + data + "</span></p>";
+        $("#chatbox").append(botHtml);
+        $("#chatbox").animate({ scrollTop: $("#chatbox")[0].scrollHeight }, 1000);
+      });
+    }
+    $("#textInput").keypress(function (e) {
+      if (e.which == 13) {
+        getBotResponse();
+      }
+    });
+    $("#buttonInput").click(function () {
+      getBotResponse();
+    });
+  </script>
+</body>
+</html>
